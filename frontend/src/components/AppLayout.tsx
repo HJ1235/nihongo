@@ -10,6 +10,7 @@ type AppLayoutProps = {
 const navItems = [
   { label: '대시보드', to: '/dashboard' },
   { label: '학습', to: '/lessons' },
+  { label: 'N5 단어', to: '/words' },
   { label: '퀴즈', to: '/quiz' },
   { label: '진행률', to: '/progress' },
   { label: '오답노트', to: '/wrong-notes' },

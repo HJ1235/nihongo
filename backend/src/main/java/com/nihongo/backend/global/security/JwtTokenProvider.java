@@ -2,6 +2,7 @@ package com.nihongo.backend.global.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,10 +13,13 @@ import io.jsonwebtoken.Claims;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "nihongo-jwt-secret-key-for-local-development-only-123456";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
 
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private final SecretKey key;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String createAccessToken(Long userId) {
         Date now = new Date();
@@ -29,14 +33,14 @@ public class JwtTokenProvider {
                 .compact();
     }
     public Long getUserId(String token) {
-    Claims claims = Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
-    return Long.valueOf(claims.getSubject());
-}
+        return Long.valueOf(claims.getSubject());
+    }
 
     public boolean validateToken(String token) {
         try {

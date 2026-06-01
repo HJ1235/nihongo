@@ -12,6 +12,8 @@ export type ApiResponse<T> =
 
 export type KanaType = 'HIRAGANA' | 'KATAKANA';
 
+export type WordLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+
 export type UserLoginResponse = {
   accessToken: string;
 };
@@ -75,4 +77,27 @@ export type WrongNoteResponse = {
   romaji: string;
   wrongCount: number;
   lastWrongAt: string;
+};
+
+export type WordResponse = {
+  id: number;
+  level: WordLevel;
+  japanese: string;
+  reading: string;
+  meaning: string;
+  exampleSentence: string;
+  exampleMeaning: string;
+};
+
+export type WordQuizQuestionResponse = {
+  wordId: number;
+  level: WordLevel;
+  japanese: string;
+  reading: string;
+  choices: string[];
+};
+
+export type WordQuizAnswerResponse = {
+  correct: boolean;
+  correctAnswer: string;
 };

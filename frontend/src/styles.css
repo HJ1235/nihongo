@@ -136,7 +136,7 @@ h2 {
 
 .app-nav {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   width: 100%;
   padding: 4px;
@@ -392,6 +392,7 @@ h2 {
 
 .stats-grid,
 .lesson-grid,
+.word-grid,
 .wrong-note-grid,
 .completed-grid {
   display: grid;
@@ -460,6 +461,10 @@ h2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.word-grid {
+  grid-template-columns: 1fr;
+}
+
 .kana-card {
   display: grid;
   min-height: 172px;
@@ -481,6 +486,70 @@ h2 {
   color: var(--muted-foreground);
   font-size: 17px;
   font-weight: 850;
+}
+
+.word-card {
+  display: grid;
+  gap: 18px;
+}
+
+.word-card-main {
+  display: grid;
+  gap: 8px;
+}
+
+.word-card-main strong,
+.word-quiz-question strong {
+  display: block;
+  font-size: clamp(40px, 14vw, 64px);
+  font-weight: 850;
+  line-height: 1;
+}
+
+.word-card-main span,
+.word-quiz-question p {
+  color: var(--muted-foreground);
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.word-card-main p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.word-example {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.word-example p {
+  margin: 0;
+  color: var(--foreground);
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.word-example small {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.word-quiz-question {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.word-quiz-question p {
+  margin: 0;
 }
 
 .quiz-panel {
@@ -628,7 +697,8 @@ h2 {
 
   .app-nav {
     justify-self: center;
-    width: min(100%, 560px);
+    width: min(100%, 660px);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .page-layout {
@@ -645,6 +715,7 @@ h2 {
   }
 
   .lesson-grid,
+  .word-grid,
   .completed-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -664,6 +735,7 @@ h2 {
   }
 
   .lesson-grid,
+  .word-grid,
   .completed-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

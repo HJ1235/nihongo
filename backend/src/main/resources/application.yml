@@ -1,11 +1,8 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nihongo
-    username: nihongo
-    password: nihongo123
-    driver-class-name: org.postgresql.Driver
+  application:
+    name: backend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+server:
+  port: ${PORT:8080}

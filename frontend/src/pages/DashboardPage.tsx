@@ -55,6 +55,9 @@ function DashboardPage() {
 
           <section className="quick-actions">
             <ButtonLink to="/lessons">학습 목록</ButtonLink>
+            <ButtonLink to="/words" variant="secondary">
+              N5 단어 학습
+            </ButtonLink>
             <ButtonLink to="/quiz" variant="secondary">
               퀴즈 시작
             </ButtonLink>

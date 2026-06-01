@@ -9,6 +9,8 @@ import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
 import QuizPage from './pages/QuizPage';
 import SignupPage from './pages/SignupPage';
+import WordQuizPage from './pages/WordQuizPage';
+import WordsPage from './pages/WordsPage';
 import WrongNotesPage from './pages/WrongNotesPage';
 import './styles.css';
 
@@ -26,6 +28,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={protectedPage(<DashboardPage />)} />
         <Route path="/lessons" element={protectedPage(<LessonsPage />)} />
+        <Route path="/words" element={protectedPage(<WordsPage />)} />
+        <Route path="/word-quiz" element={protectedPage(<WordQuizPage />)} />
         <Route path="/quiz" element={protectedPage(<QuizPage />)} />
         <Route path="/quiz/review" element={protectedPage(<QuizPage mode="review" />)} />
         <Route path="/progress" element={protectedPage(<ProgressPage />)} />

@@ -129,7 +129,7 @@ PostgreSQL 컨테이너 정보:
 | Port | `5432:5432` |
 | Database | `nihongo` |
 | Username | `nihongo` |
-| Password | `nihongo123` |
+| Password | `<local-db-password>` |
 
 ### 2. Backend 실행
 
@@ -174,14 +174,14 @@ http://localhost:5173
 
 ## 환경 변수 또는 설정 정보
 
-현재 개발 환경 설정은 `backend/src/main/resources/application.yml`에 정의되어 있습니다.
+현재 개발 환경 설정은 `backend/src/main/resources/application-dev.yml`에 정의되어 있습니다.
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/nihongo
+    url: jdbc:postgresql://localhost:5432/<database>
     username: nihongo
-    password: nihongo123
+    password: <local-db-password>
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -321,7 +321,7 @@ npm.cmd run dev
 ```text
 Database: nihongo
 Username: nihongo
-Password: nihongo123
+Password: <local-db-password>
 Port: 5432
 ```
 

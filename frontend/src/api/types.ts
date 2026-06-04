@@ -24,6 +24,10 @@ export type UserMeResponse = {
   nickname: string;
 };
 
+export type UserRole = 'USER' | 'ADMIN';
+
+export type UserStatus = 'ACTIVE' | 'SUSPENDED';
+
 export type LessonResponse = {
   id: number;
   kanaType: KanaType;
@@ -100,4 +104,27 @@ export type WordQuizQuestionResponse = {
 export type WordQuizAnswerResponse = {
   correct: boolean;
   correctAnswer: string;
+};
+
+export type NoticeResponse = {
+  id: number;
+  title: string;
+  content: string;
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string | null;
+  createdById: number;
+  createdByNickname: string;
+};
+
+export type AdminUserResponse = {
+  id: number;
+  email: string;
+  nickname: string;
+  role: UserRole;
+  status: UserStatus;
+  suspendReason: string | null;
+  suspendUntil: string | null;
+  createdAt: string;
+  updatedAt: string | null;
 };

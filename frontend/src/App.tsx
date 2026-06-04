@@ -3,6 +3,9 @@ import type { ReactNode } from 'react';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import AppLayout from './components/AppLayout';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminNoticesPage from './pages/AdminNoticesPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 import DashboardPage from './pages/DashboardPage';
 import LessonsPage from './pages/LessonsPage';
 import LoginPage from './pages/LoginPage';
@@ -34,6 +37,9 @@ function App() {
         <Route path="/quiz/review" element={protectedPage(<QuizPage mode="review" />)} />
         <Route path="/progress" element={protectedPage(<ProgressPage />)} />
         <Route path="/wrong-notes" element={protectedPage(<WrongNotesPage />)} />
+        <Route path="/admin" element={protectedPage(<AdminDashboardPage />)} />
+        <Route path="/admin/notices" element={protectedPage(<AdminNoticesPage />)} />
+        <Route path="/admin/users" element={protectedPage(<AdminUsersPage />)} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AuthProvider>

@@ -46,6 +46,10 @@ public class UserService {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
+        if (user.isSuspended()) {
+            throw new IllegalArgumentException("정지된 계정입니다.");
+        }
+
         String accessToken = jwtTokenProvider.createAccessToken(user.getId());
 
         return new UserLoginResponse(accessToken);

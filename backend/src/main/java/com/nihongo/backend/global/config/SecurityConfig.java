@@ -2,10 +2,12 @@ package com.nihongo.backend.global.config;
 
 import com.nihongo.backend.global.security.CustomAuthenticationEntryPoint;
 import com.nihongo.backend.global.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +27,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final List<String> PUBLIC_EXACT_PATHS = List.of(
+            "/api/health",
+            "/api/users/signup",
+            "/api/users/login",
+            "/swagger-ui.html",
+            "/v3/api-docs"
+    );
+    private static final List<String> PUBLIC_PATH_PREFIXES = List.of(
+            "/swagger-ui/",
+            "/v3/api-docs/",
+            "/swagger-resources/",
+            "/webjars/"
+    );
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
@@ -32,8 +48,24 @@ public class SecurityConfig {
     private String allowedOrigins;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher(this::isPublicRequest)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/**")
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -41,17 +73,6 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
-                        .requestMatchers("/api/health").permitAll()
-                        .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
-                        .requestMatchers("/api/users/me").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
@@ -90,6 +111,17 @@ public class SecurityConfig {
                 .map(String::trim)
                 .filter(origin -> !origin.isBlank())
                 .toList();
+    }
+
+    private boolean isPublicRequest(HttpServletRequest request) {
+        if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+            return true;
+        }
+
+        String path = request.getServletPath();
+
+        return PUBLIC_EXACT_PATHS.contains(path)
+                || PUBLIC_PATH_PREFIXES.stream().anyMatch(path::startsWith);
     }
 
     @Bean

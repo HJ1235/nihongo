@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -31,6 +35,7 @@ public class SecurityConfig {
             "/api/health",
             "/api/users/signup",
             "/api/users/login",
+            "/error",
             "/swagger-ui.html",
             "/v3/api-docs"
     );
@@ -40,6 +45,7 @@ public class SecurityConfig {
             "/swagger-resources/",
             "/webjars/"
     );
+    private static final RequestMatcher PUBLIC_REQUESTS = SecurityConfig::isPublicRequest;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -51,7 +57,7 @@ public class SecurityConfig {
     @Order(1)
     SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher(this::isPublicRequest)
+                .securityMatcher(PUBLIC_REQUESTS)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -65,15 +71,17 @@ public class SecurityConfig {
     @Order(2)
     SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/**")
+                .securityMatcher(new NegatedRequestMatcher(PUBLIC_REQUESTS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().access((authentication, context) ->
+                                new AuthorizationDecision(isPublicRequest(context.getRequest())
+                                        || isAuthenticatedUser(authentication.get()))
+                        )
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -113,15 +121,29 @@ public class SecurityConfig {
                 .toList();
     }
 
-    private boolean isPublicRequest(HttpServletRequest request) {
+    private static boolean isPublicRequest(HttpServletRequest request) {
         if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true;
         }
 
-        String path = request.getServletPath();
+        String path = request.getRequestURI();
+        String contextPath = request.getContextPath();
+
+        if (contextPath != null && !contextPath.isBlank() && path.startsWith(contextPath)) {
+            path = path.substring(contextPath.length());
+        }
+
+        String requestTarget = path + " " + request.getRequestURL();
 
         return PUBLIC_EXACT_PATHS.contains(path)
+                || PUBLIC_EXACT_PATHS.stream().anyMatch(requestTarget::contains)
                 || PUBLIC_PATH_PREFIXES.stream().anyMatch(path::startsWith);
+    }
+
+    private static boolean isAuthenticatedUser(org.springframework.security.core.Authentication authentication) {
+        return authentication != null
+                && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken);
     }
 
     @Bean

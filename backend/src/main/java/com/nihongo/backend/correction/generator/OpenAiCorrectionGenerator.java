@@ -4,12 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nihongo.backend.correction.config.AiCorrectionProperties;
 import com.nihongo.backend.domain.correction.CorrectionMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 public class OpenAiCorrectionGenerator implements CorrectionGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(OpenAiCorrectionGenerator.class);
 
     private final AiCorrectionProperties properties;
     private final ObjectMapper objectMapper;
@@ -53,6 +59,11 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
                 .uri("/responses")
                 .body(request)
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, (requestSpec, clientResponse) -> {
+                    String body = new String(clientResponse.getBody().readAllBytes(), StandardCharsets.UTF_8);
+                    log.warn("OpenAI API error. status={}, body={}", clientResponse.getStatusCode(), body);
+                    throw new IllegalStateException("OpenAI API error: " + clientResponse.getStatusCode() + " " + body);
+                })
                 .body(JsonNode.class);
 
         return parseCorrectionResult(extractText(response));
@@ -88,6 +99,7 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
             }
         }
 
+        log.warn("OpenAI correction response did not contain output text. response={}", response);
         throw new IllegalStateException("OpenAI correction response did not contain output text.");
     }
 
@@ -99,6 +111,7 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
                     result.path("explanation").asText()
             );
         } catch (Exception e) {
+            log.warn("Failed to parse OpenAI correction response. text={}", jsonText);
             throw new IllegalStateException("Failed to parse OpenAI correction response.", e);
         }
     }

@@ -21,6 +21,7 @@ public class FallbackCorrectionGenerator implements CorrectionGenerator {
         try {
             return primary.generate(originalText, mode);
         } catch (RuntimeException e) {
+            log.warn("AI correction failed. type={}, message={}", e.getClass().getName(), e.getMessage());
             log.warn("AI correction failed. Falling back to mock correction.", e);
             return fallback.generate(originalText, mode);
         }

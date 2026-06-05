@@ -55,7 +55,7 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
                 )
         );
 
-        JsonNode response = restClient.post()
+        String responseBody = restClient.post()
                 .uri("/responses")
                 .body(request)
                 .retrieve()
@@ -64,7 +64,10 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
                     log.warn("OpenAI API error. status={}, body={}", clientResponse.getStatusCode(), body);
                     throw new IllegalStateException("OpenAI API error: " + clientResponse.getStatusCode() + " " + body);
                 })
-                .body(JsonNode.class);
+                .body(String.class);
+
+        log.debug("OpenAI API response body={}", responseBody);
+        JsonNode response = readResponse(responseBody);
 
         return parseCorrectionResult(extractText(response));
     }
@@ -86,6 +89,8 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
             throw new IllegalStateException("OpenAI correction response is empty.");
         }
 
+        log.debug("OpenAI correction response structure={}", response.toPrettyString());
+
         JsonNode outputText = response.path("output_text");
         if (outputText.isTextual() && !outputText.asText().isBlank()) {
             return outputText.asText();
@@ -101,6 +106,15 @@ public class OpenAiCorrectionGenerator implements CorrectionGenerator {
 
         log.warn("OpenAI correction response did not contain output text. response={}", response);
         throw new IllegalStateException("OpenAI correction response did not contain output text.");
+    }
+
+    private JsonNode readResponse(String responseBody) {
+        try {
+            return objectMapper.readTree(responseBody);
+        } catch (Exception e) {
+            log.warn("Failed to parse OpenAI API response body. body={}", responseBody);
+            throw new IllegalStateException("Failed to parse OpenAI API response body.", e);
+        }
     }
 
     private CorrectionResult parseCorrectionResult(String jsonText) {

@@ -65,9 +65,9 @@ p {
 h1 {
   margin: 0;
   color: var(--foreground);
-  font-size: clamp(30px, 8vw, 52px);
+  font-size: clamp(30px, 7vw, 48px);
   letter-spacing: 0;
-  line-height: 0.98;
+  line-height: 1.05;
 }
 
 h2 {
@@ -139,7 +139,7 @@ h2 {
 .app-nav {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+  gap: 7px;
   width: 100%;
   padding: 4px;
   border: 1px solid var(--border);
@@ -151,8 +151,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 6px;
+  min-height: 40px;
+  padding: 0 8px;
   border-radius: 6px;
   color: var(--muted-foreground);
   font-size: 13px;
@@ -188,7 +188,7 @@ h2 {
 .page-layout {
   width: min(100%, 1120px);
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: 24px 16px 56px;
 }
 
 .page-header {
@@ -205,6 +205,10 @@ h2 {
 
 .auth-card {
   width: min(100%, 440px);
+}
+
+.auth-card h1 {
+  font-size: clamp(30px, 8vw, 38px);
 }
 
 .auth-heading {
@@ -251,7 +255,7 @@ h2 {
   background: var(--card);
   color: var(--card-foreground);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: clamp(16px, 4vw, 22px);
 }
 
 .ui-button {
@@ -264,7 +268,7 @@ h2 {
   border-radius: var(--radius);
   font-weight: 850;
   letter-spacing: 0;
-  line-height: 1;
+  line-height: 1.2;
   text-decoration: none;
   transition:
     background-color 160ms ease,
@@ -413,7 +417,7 @@ h2 {
 .wrong-note-grid,
 .completed-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   margin-top: 18px;
 }
 
@@ -575,8 +579,38 @@ h2 {
 .correction-layout,
 .recommendation-layout {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   margin-top: 18px;
+}
+
+.admin-stats-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 4px;
+}
+
+.admin-stat-card {
+  display: grid;
+  gap: 10px;
+  min-height: 116px;
+  align-content: space-between;
+}
+
+.admin-stat-card span {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.admin-stat-card strong {
+  display: block;
+  font-size: clamp(28px, 8vw, 42px);
+  line-height: 1;
+}
+
+.admin-stat-card.stat-card-dark span {
+  color: hsl(210 40% 86%);
 }
 
 .correction-main,
@@ -589,6 +623,45 @@ h2 {
 .mode-selector-header {
   display: grid;
   gap: 14px;
+}
+
+.correction-stats-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 4px;
+}
+
+.correction-stat-card {
+  display: grid;
+  gap: 10px;
+  min-height: 116px;
+  align-content: space-between;
+}
+
+.correction-stat-card span {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.correction-stat-card strong {
+  display: block;
+  font-size: clamp(28px, 8vw, 42px);
+  line-height: 1;
+}
+
+.correction-stat-card.stat-card-dark span {
+  color: hsl(210 40% 86%);
+}
+
+.correction-stat-meta strong {
+  font-size: clamp(18px, 5vw, 24px);
+  line-height: 1.25;
+}
+
+.compact-status {
+  margin-top: 12px;
 }
 
 .mode-selector-header h2 {
@@ -620,7 +693,7 @@ h2 {
 
 .recommendation-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   grid-template-columns: 1fr;
 }
 
@@ -846,7 +919,7 @@ h2 {
   overflow: hidden;
   font-weight: 850;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .correction-history-item small {
@@ -1154,9 +1227,16 @@ h2 {
   }
 
   .app-nav {
+    display: flex;
+    flex-wrap: wrap;
     justify-self: center;
-    width: min(100%, 760px);
-    grid-template-columns: repeat(9, minmax(0, 1fr));
+    width: min(100%, 900px);
+    justify-content: center;
+  }
+
+  .nav-link {
+    flex: 0 1 auto;
+    min-width: 78px;
   }
 
   .page-layout {
@@ -1170,6 +1250,14 @@ h2 {
 
   .stats-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .correction-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .lesson-grid,
@@ -1206,6 +1294,10 @@ h2 {
 @media (min-width: 960px) {
   .app-header {
     padding-inline: 40px;
+  }
+
+  .app-nav {
+    flex-wrap: nowrap;
   }
 
   .lesson-grid,

@@ -22,7 +22,7 @@ function LoginPage() {
       <main className="auth-layout">
         <Card className="auth-card">
           <p className="eyebrow">NihonGO</p>
-          <h1>준비 중입니다</h1>
+          <h1>학습 공간을 준비하고 있습니다</h1>
         </Card>
       </main>
     );
@@ -41,7 +41,7 @@ function LoginPage() {
       await login(email, password);
       navigate('/dashboard', { replace: true });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : '로그인에 실패했습니다.');
+      setErrorMessage(error instanceof Error ? error.message : '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
     } finally {
       setSubmitting(false);
     }
@@ -52,14 +52,14 @@ function LoginPage() {
       <Card className="auth-card">
         <div className="auth-heading">
           <img alt="NihonGO" className="auth-logo" src="/logo.png" />
-          <p className="auth-tagline">일본어를, 더 가까이.</p>
+          <p className="auth-tagline">일본어를 목표에 맞게, 꾸준히.</p>
           <h1>다시 학습을 이어가세요</h1>
-          <p className="summary">히라가나와 가타카나를 차분하게 반복하는 일본어 학습 공간입니다.</p>
+          <p className="summary">레슨, 퀴즈, AI 교정과 추천 실습을 한곳에서 이어갈 수 있습니다.</p>
         </div>
 
         <form className="form-stack" onSubmit={handleSubmit}>
           <label>
-            <span>Email</span>
+            <span>이메일</span>
             <Input
               autoComplete="email"
               name="email"
@@ -70,7 +70,7 @@ function LoginPage() {
             />
           </label>
           <label>
-            <span>Password</span>
+            <span>비밀번호</span>
             <Input
               autoComplete="current-password"
               name="password"
@@ -87,7 +87,7 @@ function LoginPage() {
         </form>
 
         <p className="auth-link">
-          계정이 없나요? <Link to="/signup">회원가입</Link>
+          아직 계정이 없나요? <Link to="/signup">회원가입</Link>
         </p>
       </Card>
     </main>

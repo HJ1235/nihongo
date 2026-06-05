@@ -40,7 +40,7 @@ function LessonsPage() {
     <main className="page-layout">
       <PageHeader
         action={<ButtonLink to="/quiz">퀴즈 시작</ButtonLink>}
-        description="문자와 발음을 카드로 빠르게 훑어보세요."
+        description="문자와 발음을 카드로 확인하고, 퀴즈로 바로 복습해보세요."
         eyebrow="Lessons"
         title="학습 목록"
       />
@@ -61,7 +61,7 @@ function LessonsPage() {
 
       {loading && <p className="status-text">학습 목록을 불러오는 중입니다...</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {!loading && !errorMessage && lessons.length === 0 && <p className="empty-state">학습 데이터가 없습니다.</p>}
+      {!loading && !errorMessage && lessons.length === 0 && <p className="empty-state">표시할 학습 데이터가 없습니다.</p>}
 
       {!loading && !errorMessage && lessons.length > 0 && (
         <section className="lesson-grid">

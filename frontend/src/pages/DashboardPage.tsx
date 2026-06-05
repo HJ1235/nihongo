@@ -28,9 +28,9 @@ function DashboardPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        description="오늘도 문자 하나씩, 부담 없이 쌓아가세요."
+        description="오늘의 학습 현황과 바로 이어갈 수 있는 활동을 확인하세요."
         eyebrow="Dashboard"
-        title={user?.nickname || user?.email}
+        title={user?.nickname || user?.email || '내 학습 현황'}
       />
 
       {loading && <p className="status-text">대시보드를 불러오는 중입니다...</p>}
@@ -61,8 +61,11 @@ function DashboardPage() {
             <ButtonLink to="/quiz" variant="secondary">
               퀴즈 시작
             </ButtonLink>
-            <ButtonLink to="/progress" variant="secondary">
-              진행률 보기
+            <ButtonLink to="/recommendations" variant="secondary">
+              추천 학습
+            </ButtonLink>
+            <ButtonLink to="/corrections" variant="secondary">
+              AI 교정
             </ButtonLink>
             <ButtonLink to="/wrong-notes" variant="secondary">
               오답노트

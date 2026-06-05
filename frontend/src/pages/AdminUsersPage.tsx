@@ -104,7 +104,7 @@ function AdminUsersPage() {
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       {loading && <p className="status-text">회원 목록을 불러오는 중입니다...</p>}
 
-      {!loading && users.length === 0 && !errorMessage && <p className="empty-state">회원이 없습니다.</p>}
+      {!loading && users.length === 0 && !errorMessage && <p className="empty-state">등록된 회원이 없습니다.</p>}
 
       {!loading && users.length > 0 && (
         <section className="admin-users-layout">
@@ -174,11 +174,7 @@ function AdminUsersPage() {
               <form className="admin-form suspend-form" onSubmit={handleSuspend}>
                 <label>
                   <span>정지 사유</span>
-                  <Input
-                    onChange={(event) => setReason(event.target.value)}
-                    placeholder="정지 사유"
-                    value={reason}
-                  />
+                  <Input onChange={(event) => setReason(event.target.value)} placeholder="정지 사유" value={reason} />
                 </label>
                 <label>
                   <span>정지 기간</span>

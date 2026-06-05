@@ -172,7 +172,7 @@ function AdminNoticesPage() {
       )}
 
       {loading && <p className="status-text">관리자 권한과 공지사항을 확인하는 중입니다...</p>}
-      {!loading && authorized && notices.length === 0 && !errorMessage && <p className="empty-state">공지사항이 없습니다.</p>}
+      {!loading && authorized && notices.length === 0 && !errorMessage && <p className="empty-state">등록된 공지사항이 없습니다.</p>}
 
       {!loading && authorized && notices.length > 0 && (
         <section className="admin-list">
@@ -181,7 +181,7 @@ function AdminNoticesPage() {
               <div className="admin-list-header">
                 <div>
                   <div className="admin-badges">
-                    {notice.pinned && <Badge>PINNED</Badge>}
+                    {notice.pinned && <Badge>고정</Badge>}
                     <Badge>{notice.createdByNickname}</Badge>
                   </div>
                   <h2>{notice.title}</h2>

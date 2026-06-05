@@ -31,14 +31,14 @@ function WordsPage() {
     <main className="page-layout">
       <PageHeader
         action={<ButtonLink to="/word-quiz">단어 퀴즈</ButtonLink>}
-        description="JLPT N5 핵심 단어 30개를 뜻과 예문으로 확인하세요."
+        description="JLPT N5 핵심 단어를 뜻과 예문으로 확인하세요."
         eyebrow="JLPT N5"
         title="N5 단어 학습"
       />
 
       {loading && <p className="status-text">단어 목록을 불러오는 중입니다...</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {!loading && !errorMessage && words.length === 0 && <p className="empty-state">단어 데이터가 없습니다.</p>}
+      {!loading && !errorMessage && words.length === 0 && <p className="empty-state">표시할 단어 데이터가 없습니다.</p>}
 
       {!loading && !errorMessage && words.length > 0 && (
         <section className="word-grid">

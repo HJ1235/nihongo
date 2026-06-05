@@ -24,7 +24,7 @@ function ProgressPage() {
     Promise.all([getDashboard(), getProgress()])
       .then(([dashboardResponse, progressResponse]) => {
         if (!dashboardResponse.success) {
-          throw new Error(dashboardResponse.message ?? '진행률 정보를 불러오지 못했습니다.');
+          throw new Error(dashboardResponse.message ?? '진도 정보를 불러오지 못했습니다.');
         }
         if (!progressResponse.success) {
           throw new Error(progressResponse.message ?? '완료한 학습 목록을 불러오지 못했습니다.');
@@ -34,7 +34,7 @@ function ProgressPage() {
         setCompletedLessons(progressResponse.data);
       })
       .catch((error) => {
-        setErrorMessage(error instanceof Error ? error.message : '진행률 정보를 불러오지 못했습니다.');
+        setErrorMessage(error instanceof Error ? error.message : '진도 정보를 불러오지 못했습니다.');
         setDashboard(null);
         setCompletedLessons([]);
       })
@@ -44,12 +44,12 @@ function ProgressPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        description="완료한 문자와 남은 분량을 조용히 확인합니다."
+        description="완료한 문자와 남은 학습 분량을 확인합니다."
         eyebrow="Progress"
         title="학습 진행률"
       />
 
-      {loading && <p className="status-text">진행률 정보를 불러오는 중입니다...</p>}
+      {loading && <p className="status-text">진도 정보를 불러오는 중입니다...</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
       {dashboard && (

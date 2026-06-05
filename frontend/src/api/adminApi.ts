@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiClient } from './client';
-import type { AdminUserResponse, ApiResponse, NoticeResponse } from './types';
+import type { AdminStatsResponse, AdminUserResponse, ApiResponse, NoticeResponse } from './types';
 
 export type NoticeRequest = {
   title: string;
@@ -43,6 +43,11 @@ export async function deleteNotice(noticeId: number) {
 
 export async function getAdminUsers() {
   const response = await apiClient.get<ApiResponse<AdminUserResponse[]>>('/api/admin/users');
+  return response.data;
+}
+
+export async function getAdminStats() {
+  const response = await apiClient.get<ApiResponse<AdminStatsResponse>>('/api/admin/stats');
   return response.data;
 }
 

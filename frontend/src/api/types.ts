@@ -133,6 +133,16 @@ export type AdminUserResponse = {
   updatedAt: string | null;
 };
 
+export type AdminStatsResponse = {
+  totalUserCount: number;
+  activeUserCount: number;
+  suspendedUserCount: number;
+  noticeCount: number;
+  pinnedNoticeCount: number;
+  totalCorrectionCount: number;
+  todayCorrectionCount: number;
+};
+
 export type CorrectionResponse = {
   id: number;
   userId: number;
@@ -141,6 +151,16 @@ export type CorrectionResponse = {
   explanation: string;
   mode: CorrectionMode;
   createdAt: string;
+};
+
+export type CorrectionStatsResponse = {
+  totalCount: number;
+  generalCount: number;
+  jobInterviewCount: number;
+  workingHolidayCount: number;
+  dailyLifeCount: number;
+  latestCorrectedAt: string | null;
+  mostUsedMode: CorrectionMode | null;
 };
 
 export type LearningModeResponse = {

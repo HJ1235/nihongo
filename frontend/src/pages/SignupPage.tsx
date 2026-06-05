@@ -25,7 +25,7 @@ function SignupPage() {
 
       navigate('/login', { replace: true });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : '회원가입에 실패했습니다.');
+      setErrorMessage(error instanceof Error ? error.message : '회원가입에 실패했습니다. 입력값을 다시 확인해주세요.');
     } finally {
       setSubmitting(false);
     }
@@ -36,14 +36,14 @@ function SignupPage() {
       <Card className="auth-card">
         <div className="auth-heading">
           <img alt="NihonGO" className="auth-logo" src="/logo.png" />
-          <p className="auth-tagline">일본어를, 더 가까이.</p>
-          <h1>새 학습 계정 만들기</h1>
-          <p className="summary">짧은 퀴즈와 오답 복습으로 문자를 꾸준히 익혀보세요.</p>
+          <p className="auth-tagline">일본어를 목표에 맞게, 꾸준히.</p>
+          <h1>나만의 일본어 학습 계정을 만들어보세요</h1>
+          <p className="summary">진도, 오답노트, AI 교정 기록과 추천 학습을 계정에 안전하게 저장합니다.</p>
         </div>
 
         <form className="form-stack" onSubmit={handleSubmit}>
           <label>
-            <span>Email</span>
+            <span>이메일</span>
             <Input
               autoComplete="email"
               name="email"
@@ -54,7 +54,7 @@ function SignupPage() {
             />
           </label>
           <label>
-            <span>Password</span>
+            <span>비밀번호</span>
             <Input
               autoComplete="new-password"
               name="password"
@@ -65,7 +65,7 @@ function SignupPage() {
             />
           </label>
           <label>
-            <span>Nickname</span>
+            <span>닉네임</span>
             <Input
               autoComplete="nickname"
               name="nickname"

@@ -55,14 +55,14 @@ function WrongNotesPage() {
     <main className="page-layout">
       <PageHeader
         action={<ButtonLink to="/quiz/review">복습 퀴즈 시작</ButtonLink>}
-        description="자주 틀린 문자를 한곳에서 다시 확인하세요."
+        description="자주 틀린 문자를 모아 다시 확인하고 복습할 수 있습니다."
         eyebrow="Wrong Notes"
         title="오답노트"
       />
 
       {loading && <p className="status-text">오답노트를 불러오는 중입니다...</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {!loading && !errorMessage && wrongNotes.length === 0 && <p className="empty-state">오답노트가 비어 있습니다.</p>}
+      {!loading && !errorMessage && wrongNotes.length === 0 && <p className="empty-state">현재 오답노트가 비어 있습니다.</p>}
 
       {!loading && wrongNotes.length > 0 && (
         <section className="wrong-note-grid">

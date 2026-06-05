@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { ApiResponse, CorrectionMode, CorrectionResponse } from './types';
+import type { ApiResponse, CorrectionMode, CorrectionResponse, CorrectionStatsResponse } from './types';
 
 export type CorrectionCreatePayload = {
   originalText: string;
@@ -18,5 +18,10 @@ export async function getMyCorrections() {
 
 export async function getCorrection(correctionId: number) {
   const response = await apiClient.get<ApiResponse<CorrectionResponse>>(`/api/corrections/${correctionId}`);
+  return response.data;
+}
+
+export async function getCorrectionStats() {
+  const response = await apiClient.get<ApiResponse<CorrectionStatsResponse>>('/api/corrections/stats');
   return response.data;
 }

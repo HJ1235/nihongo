@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { createCorrection, getCorrection, getMyCorrections } from '../api/correctionApi';
-import type { CorrectionMode, CorrectionResponse } from '../api/types';
+import { createCorrection, getCorrection, getCorrectionStats, getMyCorrections } from '../api/correctionApi';
+import type { CorrectionMode, CorrectionResponse, CorrectionStatsResponse } from '../api/types';
 import { Badge, Button, Card, PageHeader } from '../components/ui';
 
 type CorrectionLocationState = {
@@ -47,13 +47,35 @@ function CorrectionPage() {
     isCorrectionMode(locationState?.mode) ? locationState.mode : 'GENERAL',
   );
   const [corrections, setCorrections] = useState<CorrectionResponse[]>([]);
+  const [stats, setStats] = useState<CorrectionStatsResponse | null>(null);
   const [selectedCorrection, setSelectedCorrection] = useState<CorrectionResponse | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [loadingStats, setLoadingStats] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statsErrorMessage, setStatsErrorMessage] = useState<string | null>(null);
 
   const selectedId = selectedCorrection?.id ?? null;
   const canSubmit = useMemo(() => originalText.trim().length > 0 && !submitting, [originalText, submitting]);
+
+  const loadStats = () => {
+    setLoadingStats(true);
+    setStatsErrorMessage(null);
+
+    getCorrectionStats()
+      .then((response) => {
+        if (!response.success) {
+          throw new Error(response.message ?? '교정 통계를 불러오지 못했습니다.');
+        }
+
+        setStats(response.data);
+      })
+      .catch((error) => {
+        setStatsErrorMessage(getErrorMessage(error, '교정 통계를 불러오지 못했습니다.'));
+        setStats(null);
+      })
+      .finally(() => setLoadingStats(false));
+  };
 
   const loadCorrections = () => {
     setLoadingHistory(true);
@@ -75,6 +97,7 @@ function CorrectionPage() {
   };
 
   useEffect(() => {
+    loadStats();
     loadCorrections();
   }, []);
 
@@ -96,6 +119,7 @@ function CorrectionPage() {
       setSelectedCorrection(response.data);
       setCorrections((current) => [response.data, ...current.filter((item) => item.id !== response.data.id)]);
       setOriginalText('');
+      loadStats();
     } catch (error) {
       setErrorMessage(getErrorMessage(error, '교정을 요청하지 못했습니다.'));
     } finally {
@@ -127,6 +151,40 @@ function CorrectionPage() {
       />
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      <section className="correction-stats-grid">
+        <Card className="correction-stat-card stat-card-dark">
+          <span>총 교정</span>
+          <strong>{stats?.totalCount ?? 0}</strong>
+        </Card>
+        <Card className="correction-stat-card">
+          <span>일반</span>
+          <strong>{stats?.generalCount ?? 0}</strong>
+        </Card>
+        <Card className="correction-stat-card">
+          <span>면접</span>
+          <strong>{stats?.jobInterviewCount ?? 0}</strong>
+        </Card>
+        <Card className="correction-stat-card">
+          <span>워킹홀리데이</span>
+          <strong>{stats?.workingHolidayCount ?? 0}</strong>
+        </Card>
+        <Card className="correction-stat-card">
+          <span>일상</span>
+          <strong>{stats?.dailyLifeCount ?? 0}</strong>
+        </Card>
+        <Card className="correction-stat-card correction-stat-meta">
+          <span>최다 사용 모드</span>
+          <strong>{stats?.mostUsedMode ? modeLabels[stats.mostUsedMode] : '-'}</strong>
+        </Card>
+        <Card className="correction-stat-card correction-stat-meta">
+          <span>최근 교정</span>
+          <strong>{stats?.latestCorrectedAt ? formatDate(stats.latestCorrectedAt) : '-'}</strong>
+        </Card>
+      </section>
+
+      {loadingStats && <p className="status-text compact-status">교정 통계를 불러오는 중입니다...</p>}
+      {statsErrorMessage && <p className="status-text compact-status">{statsErrorMessage}</p>}
 
       <section className="correction-layout">
         <div className="correction-main">
@@ -183,7 +241,7 @@ function CorrectionPage() {
               </div>
             </Card>
           ) : (
-            !loadingHistory && <p className="empty-state">아직 교정 결과가 없습니다.</p>
+            !loadingHistory && <p className="empty-state">아직 교정 결과가 없습니다. 문장을 입력해 첫 교정을 시작해보세요.</p>
           )}
         </div>
 
@@ -194,7 +252,7 @@ function CorrectionPage() {
           </div>
 
           {loadingHistory && <p className="status-text">교정 기록을 불러오는 중입니다...</p>}
-          {!loadingHistory && corrections.length === 0 && <p className="empty-state">교정 기록이 없습니다.</p>}
+          {!loadingHistory && corrections.length === 0 && <p className="empty-state">아직 저장된 교정 기록이 없습니다.</p>}
 
           {!loadingHistory && corrections.length > 0 && (
             <div className="correction-history-list">

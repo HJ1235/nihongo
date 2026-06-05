@@ -75,7 +75,7 @@ function QuizPage({ mode = 'random' }: QuizPageProps) {
   return (
     <main className="page-layout">
       <PageHeader
-        description={isReviewMode ? '오답노트에서 남은 문자를 다시 확인합니다.' : '문자를 보고 알맞은 로마자를 선택하세요.'}
+        description={isReviewMode ? '오답노트에 남은 문자를 다시 확인합니다.' : '문자를 보고 알맞은 로마자를 선택하세요.'}
         eyebrow={isReviewMode ? 'Review Quiz' : 'Quiz'}
         title={isReviewMode ? '복습 퀴즈' : '랜덤 퀴즈'}
       />

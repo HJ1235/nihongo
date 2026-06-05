@@ -46,7 +46,10 @@ NihonGO는 기초 일본어 학습부터 상황별 실습, AI 문장 교정, 학
 ### AI
 
 - MockCorrectionGenerator
-- OpenAI/Gemini Provider 구조
+- OpenAiCorrectionGenerator
+- GeminiCorrectionGenerator 확장 구조
+- 환경변수 기반 Provider 선택
+- OpenAI 실패 시 Mock fallback
 
 ## 주요 기능
 
@@ -140,6 +143,8 @@ Mock / OpenAI / Gemini
 
 CorrectionGenerator 인터페이스를 기준으로 Mock, OpenAI, Gemini Provider를 분리했습니다. API Key가 없거나 Provider가 mock으로 설정된 경우 MockCorrectionGenerator로 동작하며, 실제 AI 요청 실패 시에도 Mock 결과로 fallback할 수 있도록 구성했습니다.
 
+현재 NihonGO는 OpenAI Responses API 기반 실제 일본어 교정을 지원합니다. `AI_CORRECTION_PROVIDER=openai`와 `OPENAI_API_KEY`가 Render 환경변수에 설정되어 있으면 GPT 기반 교정 결과를 생성하며, API 키가 없거나 quota 부족, 모델 오류, 응답 파싱 실패 등으로 호출에 실패하면 MockCorrectionGenerator 결과로 자동 대체됩니다.
+
 ## 주요 화면
 
 ### 로그인
@@ -189,8 +194,12 @@ JWT_SECRET=
 CORS_ALLOWED_ORIGINS=https://nihongotest.shop
 AI_CORRECTION_PROVIDER=mock
 OPENAI_API_KEY=
+OPENAI_CORRECTION_MODEL=gpt-5.2
+OPENAI_BASE_URL=https://api.openai.com/v1
 GEMINI_API_KEY=
 ```
+
+`AI_CORRECTION_PROVIDER`는 `mock`, `openai`, `gemini` 중 하나로 설정합니다. 실제 OpenAI API Key는 코드나 문서에 저장하지 않고 Render 환경변수에만 등록합니다.
 
 ### Frontend
 
@@ -200,7 +209,7 @@ VITE_API_BASE_URL=https://api.nihongotest.shop
 
 ## 향후 개선 계획
 
-- OpenAI 실서비스 연동
+- OpenAI 운영 안정화
 - Gemini Provider 활성화
 - 관리자 통계 확장
 - 학습 추천 고도화

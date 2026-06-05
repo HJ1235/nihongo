@@ -361,6 +361,8 @@ Response:
 
 ## Correction
 
+`POST /api/corrections`는 선택된 AI Provider에 따라 일본어 교정 결과를 생성합니다. `AI_CORRECTION_PROVIDER=openai`로 설정된 경우 OpenAI Responses API를 호출하며, API 키가 없거나 OpenAI 호출 실패, quota 부족, 응답 파싱 실패가 발생하면 MockCorrectionGenerator 결과로 대체됩니다.
+
 | Method | Endpoint | 인증 | 관리자 | 설명 |
 | --- | --- | --- | --- | --- |
 | POST | `/api/corrections` | 필요 | 불필요 | 일본어 문장 교정 요청 |

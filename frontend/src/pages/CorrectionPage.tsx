@@ -1,7 +1,13 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { createCorrection, getCorrection, getMyCorrections } from '../api/correctionApi';
 import type { CorrectionMode, CorrectionResponse } from '../api/types';
 import { Badge, Button, Card, PageHeader } from '../components/ui';
+
+type CorrectionLocationState = {
+  initialText?: string;
+  mode?: CorrectionMode;
+};
 
 const modeOptions: Array<{ label: string; value: CorrectionMode }> = [
   { label: '일반', value: 'GENERAL' },
@@ -29,9 +35,17 @@ function formatDate(value: string) {
   return new Date(value).toLocaleString('ko-KR');
 }
 
+function isCorrectionMode(value: unknown): value is CorrectionMode {
+  return value === 'GENERAL' || value === 'JOB_INTERVIEW' || value === 'WORKING_HOLIDAY' || value === 'DAILY_LIFE';
+}
+
 function CorrectionPage() {
-  const [originalText, setOriginalText] = useState('');
-  const [mode, setMode] = useState<CorrectionMode>('GENERAL');
+  const location = useLocation();
+  const locationState = location.state as CorrectionLocationState | null;
+  const [originalText, setOriginalText] = useState(() => locationState?.initialText ?? '');
+  const [mode, setMode] = useState<CorrectionMode>(() =>
+    isCorrectionMode(locationState?.mode) ? locationState.mode : 'GENERAL',
+  );
   const [corrections, setCorrections] = useState<CorrectionResponse[]>([]);
   const [selectedCorrection, setSelectedCorrection] = useState<CorrectionResponse | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(true);
@@ -123,7 +137,7 @@ function CorrectionPage() {
                 <textarea
                   className="ui-textarea correction-textarea"
                   onChange={(event) => setOriginalText(event.target.value)}
-                  placeholder="例）今日は仕事が大変でした。"
+                  placeholder="교정받고 싶은 일본어 문장을 입력하세요."
                   value={originalText}
                 />
               </label>

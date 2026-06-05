@@ -123,7 +123,7 @@ function CorrectionPage() {
                 <textarea
                   className="ui-textarea correction-textarea"
                   onChange={(event) => setOriginalText(event.target.value)}
-                  placeholder="例: 私は日本語を勉強する"
+                  placeholder="例）今日は仕事が大変でした。"
                   value={originalText}
                 />
               </label>

@@ -6,3 +6,13 @@ spring:
 
 server:
   port: ${PORT:8080}
+
+ai:
+  correction:
+    provider: ${AI_CORRECTION_PROVIDER:mock}
+    openai-api-key: ${OPENAI_API_KEY:}
+    openai-model: ${OPENAI_CORRECTION_MODEL:gpt-5.2}
+    openai-base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+    gemini-api-key: ${GEMINI_API_KEY:}
+    gemini-model: ${GEMINI_CORRECTION_MODEL:gemini-2.5-flash}
+    gemini-base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta}

@@ -2,6 +2,8 @@ package com.nihongo.backend.domain.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.nihongo.backend.domain.user.type.UserStatus;
+
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -9,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    long countByStatus(UserStatus status);
 }

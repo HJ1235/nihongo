@@ -37,7 +37,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -338,6 +340,21 @@ h2 {
   color: hsl(215.4 16.3% 56%);
 }
 
+.ui-select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.ui-select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 .form-stack {
   display: grid;
   gap: 16px;
@@ -554,10 +571,114 @@ h2 {
 
 .admin-grid,
 .admin-list,
-.admin-users-layout {
+.admin-users-layout,
+.correction-layout {
   display: grid;
   gap: 14px;
   margin-top: 18px;
+}
+
+.correction-main,
+.correction-form,
+.correction-result-card,
+.correction-history,
+.correction-history-list {
+  display: grid;
+  gap: 14px;
+}
+
+.correction-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.correction-textarea {
+  min-height: 180px;
+}
+
+.correction-result-header,
+.correction-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.correction-result-header time {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.correction-block {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.correction-block:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.correction-block span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.correction-block p {
+  margin: 0;
+  line-height: 1.75;
+}
+
+.correction-block.corrected p {
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.correction-history {
+  align-content: start;
+}
+
+.correction-history-header h2 {
+  font-size: 18px;
+}
+
+.correction-history-item {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  padding: 12px;
+  text-align: left;
+}
+
+.correction-history-item.active {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.correction-history-item span {
+  overflow: hidden;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.correction-history-item small {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 750;
 }
 
 .admin-card {
@@ -861,7 +982,7 @@ h2 {
   .app-nav {
     justify-self: center;
     width: min(100%, 760px);
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
 
   .page-layout {
@@ -892,7 +1013,8 @@ h2 {
   }
 
   .admin-grid,
-  .admin-users-layout {
+  .admin-users-layout,
+  .correction-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

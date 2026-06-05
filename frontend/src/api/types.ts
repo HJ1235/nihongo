@@ -14,6 +14,8 @@ export type KanaType = 'HIRAGANA' | 'KATAKANA';
 
 export type WordLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
+export type CorrectionMode = 'GENERAL' | 'JOB_INTERVIEW' | 'WORKING_HOLIDAY' | 'DAILY_LIFE';
+
 export type UserLoginResponse = {
   accessToken: string;
 };
@@ -127,4 +129,14 @@ export type AdminUserResponse = {
   suspendUntil: string | null;
   createdAt: string;
   updatedAt: string | null;
+};
+
+export type CorrectionResponse = {
+  id: number;
+  userId: number;
+  originalText: string;
+  correctedText: string;
+  explanation: string;
+  mode: CorrectionMode;
+  createdAt: string;
 };

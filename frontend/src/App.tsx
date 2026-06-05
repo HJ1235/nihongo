@@ -6,6 +6,7 @@ import AppLayout from './components/AppLayout';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminNoticesPage from './pages/AdminNoticesPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import CorrectionPage from './pages/CorrectionPage';
 import DashboardPage from './pages/DashboardPage';
 import LessonsPage from './pages/LessonsPage';
 import LoginPage from './pages/LoginPage';
@@ -37,6 +38,7 @@ function App() {
         <Route path="/quiz/review" element={protectedPage(<QuizPage mode="review" />)} />
         <Route path="/progress" element={protectedPage(<ProgressPage />)} />
         <Route path="/wrong-notes" element={protectedPage(<WrongNotesPage />)} />
+        <Route path="/corrections" element={protectedPage(<CorrectionPage />)} />
         <Route path="/admin" element={protectedPage(<AdminDashboardPage />)} />
         <Route path="/admin/notices" element={protectedPage(<AdminNoticesPage />)} />
         <Route path="/admin/users" element={protectedPage(<AdminUsersPage />)} />

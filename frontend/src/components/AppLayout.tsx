@@ -15,6 +15,7 @@ const navItems = [
   { label: '진행률', to: '/progress' },
   { label: '오답노트', to: '/wrong-notes' },
   { label: 'AI 교정', to: '/corrections' },
+  { label: '추천 학습', to: '/recommendations' },
   { label: '관리자', to: '/admin' },
 ];
 

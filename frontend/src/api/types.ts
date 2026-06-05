@@ -16,6 +16,8 @@ export type WordLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type CorrectionMode = 'GENERAL' | 'JOB_INTERVIEW' | 'WORKING_HOLIDAY' | 'DAILY_LIFE';
 
+export type LearningMode = 'GENERAL' | 'JAPAN_JOB' | 'WORKING_HOLIDAY' | 'DAILY_LIFE' | 'JLPT';
+
 export type UserLoginResponse = {
   accessToken: string;
 };
@@ -139,4 +141,13 @@ export type CorrectionResponse = {
   explanation: string;
   mode: CorrectionMode;
   createdAt: string;
+};
+
+export type LearningModeResponse = {
+  learningMode: LearningMode;
+};
+
+export type ModeRecommendationResponse = {
+  learningMode: LearningMode;
+  recommendations: string[];
 };

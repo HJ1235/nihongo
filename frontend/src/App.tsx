@@ -12,6 +12,7 @@ import LessonsPage from './pages/LessonsPage';
 import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
 import QuizPage from './pages/QuizPage';
+import RecommendationPage from './pages/RecommendationPage';
 import SignupPage from './pages/SignupPage';
 import WordQuizPage from './pages/WordQuizPage';
 import WordsPage from './pages/WordsPage';
@@ -39,6 +40,7 @@ function App() {
         <Route path="/progress" element={protectedPage(<ProgressPage />)} />
         <Route path="/wrong-notes" element={protectedPage(<WrongNotesPage />)} />
         <Route path="/corrections" element={protectedPage(<CorrectionPage />)} />
+        <Route path="/recommendations" element={protectedPage(<RecommendationPage />)} />
         <Route path="/admin" element={protectedPage(<AdminDashboardPage />)} />
         <Route path="/admin/notices" element={protectedPage(<AdminNoticesPage />)} />
         <Route path="/admin/users" element={protectedPage(<AdminUsersPage />)} />

@@ -572,7 +572,8 @@ h2 {
 .admin-grid,
 .admin-list,
 .admin-users-layout,
-.correction-layout {
+.correction-layout,
+.recommendation-layout {
   display: grid;
   gap: 14px;
   margin-top: 18px;
@@ -582,9 +583,68 @@ h2 {
 .correction-form,
 .correction-result-card,
 .correction-history,
-.correction-history-list {
+.correction-history-list,
+.recommendation-content,
+.mode-selector-card,
+.mode-selector-header {
   display: grid;
   gap: 14px;
+}
+
+.mode-selector-header h2 {
+  margin-top: 10px;
+}
+
+.mode-selector-header p {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+}
+
+.mode-option-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.mode-option-grid .ui-button {
+  justify-content: flex-start;
+}
+
+.recommendation-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recommendation-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.recommendation-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.recommendation-card span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.recommendation-card strong {
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.recommendation-card p {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: 1.55;
 }
 
 .correction-form label {
@@ -982,7 +1042,7 @@ h2 {
   .app-nav {
     justify-self: center;
     width: min(100%, 760px);
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-columns: repeat(9, minmax(0, 1fr));
   }
 
   .page-layout {
@@ -1014,7 +1074,12 @@ h2 {
 
   .admin-grid,
   .admin-users-layout,
-  .correction-layout {
+  .correction-layout,
+  .recommendation-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mode-option-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1033,6 +1098,10 @@ h2 {
   .word-grid,
   .completed-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .recommendation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .wrong-note-grid {

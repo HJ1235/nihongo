@@ -1,6 +1,8 @@
 package com.nihongo.backend.user;
 
 import com.nihongo.backend.global.response.ApiResponse;
+import com.nihongo.backend.user.dto.LearningModeResponse;
+import com.nihongo.backend.user.dto.UpdateLearningModeRequest;
 import com.nihongo.backend.user.dto.UserLoginRequest;
 import com.nihongo.backend.user.dto.UserLoginResponse;
 import com.nihongo.backend.user.dto.UserMeResponse;
@@ -33,5 +35,20 @@ public class UserController {
     public ApiResponse<UserMeResponse> getMyInfo(Authentication authentication) {
         Long userId = (Long) authentication.getPrincipal();
         return ApiResponse.success(userService.getMyInfo(userId));
+    }
+
+    @PatchMapping("/me/learning-mode")
+    public ApiResponse<LearningModeResponse> updateLearningMode(
+            Authentication authentication,
+            @Valid @RequestBody UpdateLearningModeRequest request
+    ) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ApiResponse.success(userService.updateLearningMode(userId, request));
+    }
+
+    @GetMapping("/me/learning-mode")
+    public ApiResponse<LearningModeResponse> getLearningMode(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ApiResponse.success(userService.getLearningMode(userId));
     }
 }

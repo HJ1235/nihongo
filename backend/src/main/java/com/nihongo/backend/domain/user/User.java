@@ -2,6 +2,7 @@ package com.nihongo.backend.domain.user;
 
 import com.nihongo.backend.domain.user.type.UserRole;
 import com.nihongo.backend.domain.user.type.UserStatus;
+import com.nihongo.backend.domain.user.type.LearningMode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,10 @@ public class User {
     @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default 'ACTIVE'")
     private UserStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30, columnDefinition = "varchar(30) default 'GENERAL'")
+    private LearningMode learningMode;
+
     @Column(length = 255)
     private String suspendReason;
 
@@ -56,6 +61,10 @@ public class User {
 
         if (this.status == null) {
             this.status = UserStatus.ACTIVE;
+        }
+
+        if (this.learningMode == null) {
+            this.learningMode = LearningMode.GENERAL;
         }
     }
 
@@ -82,5 +91,9 @@ public class User {
 
     public boolean isAdmin() {
         return this.role == UserRole.ADMIN;
+    }
+
+    public void updateLearningMode(LearningMode learningMode) {
+        this.learningMode = learningMode == null ? LearningMode.GENERAL : learningMode;
     }
 }

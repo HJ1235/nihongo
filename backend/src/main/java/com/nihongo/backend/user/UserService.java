@@ -2,7 +2,10 @@ package com.nihongo.backend.user;
 
 import com.nihongo.backend.domain.user.User;
 import com.nihongo.backend.domain.user.UserRepository;
+import com.nihongo.backend.domain.user.type.LearningMode;
 import com.nihongo.backend.global.security.JwtTokenProvider;
+import com.nihongo.backend.user.dto.LearningModeResponse;
+import com.nihongo.backend.user.dto.UpdateLearningModeRequest;
 import com.nihongo.backend.user.dto.UserLoginRequest;
 import com.nihongo.backend.user.dto.UserLoginResponse;
 import com.nihongo.backend.user.dto.UserMeResponse;
@@ -57,9 +60,29 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserMeResponse getMyInfo(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        User user = findUser(userId);
 
         return new UserMeResponse(user.getId(), user.getEmail(), user.getNickname());
+    }
+
+    @Transactional
+    public LearningModeResponse updateLearningMode(Long userId, UpdateLearningModeRequest request) {
+        User user = findUser(userId);
+        user.updateLearningMode(request.getLearningMode());
+
+        return new LearningModeResponse(user.getLearningMode());
+    }
+
+    @Transactional(readOnly = true)
+    public LearningModeResponse getLearningMode(Long userId) {
+        User user = findUser(userId);
+        LearningMode learningMode = user.getLearningMode() == null ? LearningMode.GENERAL : user.getLearningMode();
+
+        return new LearningModeResponse(learningMode);
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 }

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nihongo-backend
+  labels:
+    app: nihongo-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nihongo-backend
+  template:
+    metadata:
+      labels:
+        app: nihongo-backend
+    spec:
+      containers:
+        - name: nihongo-backend
+          image: ghcr.io/your-org/nihongo-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: nihongo-backend-config
+            - secretRef:
+                name: nihongo-backend-secret
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

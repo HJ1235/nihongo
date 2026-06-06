@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nihongo-backend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HJ1235/nihongo.git
+    targetRevision: main
+    path: k8s/backend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nihongo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

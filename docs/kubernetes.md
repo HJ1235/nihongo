@@ -51,6 +51,58 @@ ghcr.io/your-org/nihongo-backend:latest
 
 `k8s/backend/deployment.yaml`의 image 값은 실제 GHCR 또는 Docker Hub 이미지 주소로 교체해야 합니다.
 
+## GitHub Actions 이미지 자동 빌드/푸시
+
+백엔드 Docker 이미지는 GitHub Actions로 자동 빌드하고 GHCR에 푸시할 수 있습니다.
+
+워크플로 파일:
+
+```text
+.github/workflows/backend-docker-publish.yml
+```
+
+동작 조건:
+
+- `main` 브랜치에 push
+- `backend/**` 변경
+- `.github/workflows/backend-docker-publish.yml` 변경
+- GitHub Actions 화면에서 `workflow_dispatch` 수동 실행
+
+권한:
+
+```yaml
+permissions:
+  contents: read
+  packages: write
+```
+
+이미지:
+
+```text
+ghcr.io/hj1235/nihongo-backend
+```
+
+생성 태그:
+
+```text
+latest
+sha-${{ github.sha }}
+```
+
+워크플로는 별도 PAT를 사용하지 않고 GitHub 기본 `GITHUB_TOKEN`으로 GHCR에 로그인합니다.
+
+```yaml
+username: ${{ github.actor }}
+password: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Kubernetes 배포 파일은 GHCR 이미지를 사용합니다.
+
+```yaml
+image: ghcr.io/hj1235/nihongo-backend:latest
+imagePullPolicy: Always
+```
+
 ## Docker 이미지 빌드 및 로컬 실행 검증
 
 Kubernetes에 배포하기 전에 동일한 Dockerfile로 이미지를 빌드하고, 로컬 컨테이너에서 `/api/health`가 정상 응답하는지 확인합니다.

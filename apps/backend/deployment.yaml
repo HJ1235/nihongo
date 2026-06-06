@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nihongo-backend
+  namespace: nihongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nihongo-backend
+  template:
+    metadata:
+      labels:
+        app: nihongo-backend
+    spec:
+      containers:
+      - name: backend
+        image: ghcr.io/hj1235/nihongo-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: nihongo-config
+        - secretRef:
+            name: nihongo-secret

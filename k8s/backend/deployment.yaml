@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: nihongo-backend
-          image: nihongo-backend:local
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/hj1235/nihongo-backend:latest
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080

@@ -8,10 +8,11 @@ NihonGO backend는 GitHub Actions, GHCR, ArgoCD를 이용해 GitOps 방식으로
 2. GitHub Actions 실행
 3. Backend Docker image 빌드
 4. GHCR에 `latest`와 short SHA 태그 push
-5. `k8s/backend/deployment.yaml`의 image 태그를 short SHA로 변경
-6. GitHub Actions bot이 변경된 manifest를 main 브랜치에 commit/push
-7. ArgoCD가 Git 변경을 감지
-8. Kubernetes에 새 backend image 자동 배포
+5. GHCR에서 short SHA 태그 이미지를 `docker pull`로 검증
+6. pull 검증 성공 시 `k8s/backend/deployment.yaml`의 image 태그를 short SHA로 변경
+7. GitHub Actions bot이 변경된 manifest를 main 브랜치에 commit/push
+8. ArgoCD가 Git 변경을 감지
+9. Kubernetes에 새 backend image 자동 배포
 
 ## Workflow
 
@@ -28,7 +29,7 @@ NihonGO backend는 GitHub Actions, GHCR, ArgoCD를 이용해 GitOps 방식으로
 - `.github/workflows/backend-docker-ghcr.yml` 변경
 - `workflow_dispatch` 수동 실행
 
-자동 commit으로 인한 무한 반복은 workflow path filter로 방지합니다. GitHub Actions가 커밋하는 파일은 `k8s/backend/deployment.yaml`이며, 해당 경로는 workflow trigger path에 포함되어 있지 않습니다.
+자동 commit으로 인한 무한 반복은 workflow path filter와 commit message의 `[skip ci]`로 방지합니다. GitHub Actions가 커밋하는 파일은 `k8s/backend/deployment.yaml`이며, 해당 경로는 workflow trigger path에 포함되어 있지 않습니다.
 
 ## 권한
 
@@ -69,7 +70,13 @@ ghcr.io/hj1235/nihongo-backend:a1b2c3d
 
 ## Kubernetes Manifest Update
 
-Docker image push가 성공하면 workflow가 [k8s/backend/deployment.yaml](../k8s/backend/deployment.yaml)의 image 라인을 short SHA 태그로 변경합니다.
+Docker image push가 성공하면 workflow가 먼저 아래 명령으로 short SHA 태그 이미지를 GHCR에서 pull 검증합니다.
+
+```bash
+docker pull ghcr.io/hj1235/nihongo-backend:${SHORT_SHA}
+```
+
+pull 검증이 성공한 경우에만 workflow가 [k8s/backend/deployment.yaml](../k8s/backend/deployment.yaml)의 image 라인을 short SHA 태그로 변경합니다.
 
 변경 전 예시:
 
@@ -86,7 +93,7 @@ image: ghcr.io/hj1235/nihongo-backend:a1b2c3d
 자동 commit 메시지:
 
 ```text
-chore: update backend image to a1b2c3d
+chore: update backend image to a1b2c3d [skip ci]
 ```
 
 commit author:

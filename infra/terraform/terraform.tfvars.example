@@ -1,0 +1,3 @@
+project_name = "nihongo"
+environment  = "dev"
+region       = "ap-northeast-2"

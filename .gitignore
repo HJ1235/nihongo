@@ -15,6 +15,7 @@ backend/.gradle/
 backend/.env
 frontend/.env
 frontend/.env.local
+k8s/backend/secret.local.yaml
 
 # IDE and OS files
 .vscode/

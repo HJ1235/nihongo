@@ -120,6 +120,7 @@ Nihongo/
 
 - [ERD 문서](docs/erd.md)
 - [API 명세](docs/api.md)
+- [CI/CD 문서](docs/cicd.md)
 - [Kubernetes 이전 문서](docs/kubernetes.md)
 
 ## 아키텍처 개요

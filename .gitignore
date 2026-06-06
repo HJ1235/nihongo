@@ -16,6 +16,9 @@ backend/.env
 frontend/.env
 frontend/.env.local
 k8s/backend/secret.local.yaml
+*.crt
+*.key
+*.pem
 
 # IDE and OS files
 .vscode/

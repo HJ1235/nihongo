@@ -5,6 +5,10 @@ metadata:
   namespace: nihongo
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.nihongotest.shop
+      secretName: nihongo-backend-tls
   rules:
     - host: api.nihongotest.shop
       http:

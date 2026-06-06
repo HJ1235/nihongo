@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nihongo-backend
+  namespace: nihongo
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.nihongotest.shop
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nihongo-backend
+                port:
+                  number: 80

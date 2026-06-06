@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ghcr.io/hj1235/nihongo-backend:913684e
+        image: ghcr.io/hj1235/nihongo-backend:ee16492
         imagePullPolicy: Always
         ports:
         - name: http

@@ -18,7 +18,8 @@ spec:
         image: ghcr.io/hj1235/nihongo-backend:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         envFrom:
         - configMapRef:
             name: nihongo-backend-config

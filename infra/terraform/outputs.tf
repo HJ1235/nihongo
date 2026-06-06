@@ -47,3 +47,18 @@ output "nat_gateway_ids" {
   description = "NAT Gateway IDs."
   value       = [for nat_gateway in aws_nat_gateway.main : nat_gateway.id]
 }
+
+output "eks_cluster_name" {
+  description = "EKS cluster name."
+  value       = aws_eks_cluster.main.name
+}
+
+output "eks_cluster_endpoint" {
+  description = "EKS cluster endpoint."
+  value       = aws_eks_cluster.main.endpoint
+}
+
+output "eks_oidc_provider_arn" {
+  description = "EKS OIDC provider ARN."
+  value       = aws_iam_openid_connect_provider.eks.arn
+}

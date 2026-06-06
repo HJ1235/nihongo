@@ -1,6 +1,7 @@
 locals {
-  name_prefix      = "${var.project_name}-${var.environment}"
-  eks_cluster_name = "${local.name_prefix}-eks"
+  name_prefix           = "${var.project_name}-${var.environment}"
+  eks_cluster_name      = "${local.name_prefix}-eks"
+  nat_public_subnet_key = "public-a"
 
   public_subnets = {
     public-a = {

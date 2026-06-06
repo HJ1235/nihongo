@@ -76,9 +76,14 @@ resource "aws_route_table_association" "public" {
 }
 
 # NAT Gateway resources incur hourly and data processing costs.
-# They are included here for a 2-AZ high availability EKS network design.
+# The dev environment uses a single NAT Gateway to reduce personal portfolio costs.
+# For production high availability, create one NAT Gateway per AZ and route each
+# private subnet to the NAT Gateway in the same AZ.
 resource "aws_eip" "nat" {
-  for_each = aws_subnet.public
+  for_each = {
+    for key, subnet in aws_subnet.public : key => subnet
+    if key == local.nat_public_subnet_key
+  }
 
   domain = "vpc"
 
@@ -88,7 +93,10 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-  for_each = aws_subnet.public
+  for_each = {
+    for key, subnet in aws_subnet.public : key => subnet
+    if key == local.nat_public_subnet_key
+  }
 
   allocation_id = aws_eip.nat[each.key].id
   subnet_id     = each.value.id
@@ -107,7 +115,7 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main[replace(each.key, "private", "public")].id
+    nat_gateway_id = aws_nat_gateway.main[local.nat_public_subnet_key].id
   }
 
   tags = {
@@ -129,7 +137,7 @@ resource "aws_route_table" "private_db" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main[replace(each.key, "private-db", "public")].id
+    nat_gateway_id = aws_nat_gateway.main[local.nat_public_subnet_key].id
   }
 
   tags = {

@@ -17,7 +17,7 @@ spec:
       - name: ghcr-pull-secret
       containers:
       - name: backend
-        image: ghcr.io/hj1235/nihongo-backend:ee16492
+        image: ghcr.io/hj1235/nihongo-backend:ed4b291
         imagePullPolicy: Always
         ports:
         - name: http

@@ -127,13 +127,42 @@ const practiceDetails: Record<string, PracticeDetail> = {
   },
 };
 
+const japaneseTopicByRecommendation: Record<string, string> = {
+  '면접 자기소개 연습': '面接での自己紹介',
+  '경어 표현 학습': '敬語表現',
+  '비즈니스 메일 작성': 'ビジネスメールの書き方',
+  '전화 응대 표현': '電話対応の表現',
+  '이력서/직무경력서 표현': '履歴書や職務経歴書の表現',
+  '회사 생활 표현': '会社でのコミュニケーション',
+  '카페 주문': 'カフェでの注文',
+  '길 묻기': '道の尋ね方',
+  쇼핑: '買い物での会話',
+  '약속 잡기': '約束の決め方',
+  '택배 수령': '荷物の受け取り',
+  '은행 계좌 개설': '銀行口座の開設',
+  '휴대폰 개통': '携帯電話の契約',
+  '구약소 민원 처리': '区役所での手続き',
+  'N5 기초 문법': 'N5の基礎文法',
+  'N4 동사 활용': 'N4の動詞活用',
+  'N3 독해': 'N3の読解',
+  'N2/N1 어휘': 'N2・N1の語彙',
+  '청해 연습': '聴解練習',
+  '독해 문제 풀이': '読解問題',
+  '히라가나 복습': 'ひらがなの復習',
+  '가타카나 복습': 'カタカナの復習',
+  '기본 인사': '基本のあいさつ',
+  '기초 문장 만들기': '基本文の作り方',
+};
+
 function getFallbackDetail(title: string, modeLabel: string): PracticeDetail {
+  const japaneseTopic = japaneseTopicByRecommendation[title] ?? 'このテーマ';
+
   return {
     situation: `${modeLabel} 목표에 맞춰 "${title}" 상황에서 바로 쓸 수 있는 문장을 연습합니다.`,
-    expressions: [`${title}について練習したいです。`, '例文を作ってみます。', '自然な表現に直したいです。'],
+    expressions: [`${japaneseTopic}について練習したいです。`, '例文を作ってみます。', '自然な表現に直したいです。'],
     dialogue: [
       { speaker: '상대방', text: '今日は何を練習しますか。' },
-      { speaker: '사용자', text: `${title}について練習したいです。` },
+      { speaker: '사용자', text: `${japaneseTopic}について練習したいです。` },
       { speaker: '상대방', text: 'では、例文を作ってみましょう。' },
       { speaker: '사용자', text: '自然な表現に直したいです。' },
     ],

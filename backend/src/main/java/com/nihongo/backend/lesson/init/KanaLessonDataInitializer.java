@@ -4,42 +4,55 @@ import com.nihongo.backend.domain.lesson.KanaLesson;
 import com.nihongo.backend.domain.lesson.KanaLessonRepository;
 import com.nihongo.backend.domain.lesson.KanaType;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class KanaLessonDataInitializer implements ApplicationRunner {
 
+    private static final Logger log = LoggerFactory.getLogger(KanaLessonDataInitializer.class);
+
     private final KanaLessonRepository kanaLessonRepository;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        if (kanaLessonRepository.count() > 0) {
-            return;
-        }
+        long beforeCount = kanaLessonRepository.count();
+        int insertedHiragana = seedMissingLessons(KanaType.HIRAGANA, hiragana());
+        int insertedKatakana = seedMissingLessons(KanaType.KATAKANA, katakana());
+        long afterCount = kanaLessonRepository.count();
 
-        List<KanaLesson> lessons = new ArrayList<>();
-        addLessons(lessons, KanaType.HIRAGANA, hiragana());
-        addLessons(lessons, KanaType.KATAKANA, katakana());
-
-        kanaLessonRepository.saveAll(lessons);
+        log.info(
+                "Kana lesson seed checked. beforeCount={}, insertedHiragana={}, insertedKatakana={}, afterCount={}",
+                beforeCount,
+                insertedHiragana,
+                insertedKatakana,
+                afterCount
+        );
     }
 
-    private void addLessons(List<KanaLesson> lessons, KanaType type, String[][] data) {
+    private int seedMissingLessons(KanaType type, String[][] data) {
+        int insertedCount = 0;
+
         for (String[] item : data) {
-            lessons.add(KanaLesson.builder()
-                    .type(type)
-                    .kana(item[0])
-                    .romaji(item[1])
-                    .build());
+            if (!kanaLessonRepository.existsByTypeAndKana(type, item[0])) {
+                kanaLessonRepository.save(KanaLesson.builder()
+                        .type(type)
+                        .kana(item[0])
+                        .romaji(item[1])
+                        .build());
+                insertedCount++;
+            }
         }
+
+        return insertedCount;
     }
 
     private String[][] hiragana() {
@@ -89,7 +102,11 @@ public class KanaLessonDataInitializer implements ApplicationRunner {
                 {"ろ", "ro"},
                 {"わ", "wa"},
                 {"を", "wo"},
-                {"ん", "n"}
+                {"ん", "n"},
+                {"ゐ", "wi"},
+                {"ゑ", "we"},
+                {"ゔ", "vu"},
+                {"っ", "small tsu"}
         };
     }
 
@@ -140,7 +157,11 @@ public class KanaLessonDataInitializer implements ApplicationRunner {
                 {"ロ", "ro"},
                 {"ワ", "wa"},
                 {"ヲ", "wo"},
-                {"ン", "n"}
+                {"ン", "n"},
+                {"ヰ", "wi"},
+                {"ヱ", "we"},
+                {"ヴ", "vu"},
+                {"ッ", "small tsu"}
         };
     }
 }

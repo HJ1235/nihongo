@@ -9,4 +9,6 @@ public interface KanaLessonRepository extends JpaRepository<KanaLesson, Long> {
     List<KanaLesson> findAllByOrderByIdAsc();
 
     List<KanaLesson> findByTypeOrderByIdAsc(KanaType type);
+
+    boolean existsByTypeAndKana(KanaType type, String kana);
 }

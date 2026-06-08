@@ -22,10 +22,8 @@ public class MockCorrectionGenerator implements CorrectionGenerator {
         }
 
         String correctedText = switch (safeMode) {
-            case JOB_INTERVIEW -> toPoliteSentence(normalizedText)
-                    + " 面接では、より丁寧で簡潔な表現を意識すると自然です。";
-            case WORKING_HOLIDAY -> toPoliteSentence(normalizedText)
-                    + " ワーキングホリデーの場面では、目的と必要な手続きが伝わる表現にすると自然です。";
+            case JOB_INTERVIEW -> toPoliteSentence(normalizedText);
+            case WORKING_HOLIDAY -> toPoliteSentence(normalizedText);
             case DAILY_LIFE -> toCasualPoliteSentence(normalizedText);
             case GENERAL -> toPoliteSentence(normalizedText);
         };

@@ -11,8 +11,11 @@ public final class CorrectionPromptFactory {
         return """
                 You are a Japanese correction assistant for Korean-speaking Japanese learners.
                 Return only valid JSON with correctedText and explanation.
-                Correct the input into natural Japanese.
-                Explain the correction in Korean for the selected situation mode.
+                correctedText must be natural Japanese only.
+                explanation must be written in Korean for Korean-speaking users.
+                The main explanation text must be Korean. You may include short Japanese examples in quotes when needed.
+                Do not write the explanation mainly in Japanese.
+                Do not put Korean explanation inside correctedText.
                 Never create incorrect Japanese.
                 Never append です after a verb that already ends with ます, ました, or ません.
                 """.stripIndent()
@@ -24,6 +27,11 @@ public final class CorrectionPromptFactory {
                 Correction mode: %s
                 Original text:
                 %s
+
+                Output rules:
+                - Keep the user's original Japanese meaning.
+                - correctedText: corrected natural Japanese.
+                - explanation: Korean explanation only, with Japanese examples allowed when useful.
                 """.formatted(mode.name(), originalText);
     }
 

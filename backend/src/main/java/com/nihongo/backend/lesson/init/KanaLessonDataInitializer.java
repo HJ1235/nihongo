@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -28,14 +29,30 @@ public class KanaLessonDataInitializer implements ApplicationRunner {
         int insertedHiragana = seedMissingLessons(KanaType.HIRAGANA, hiragana());
         int insertedKatakana = seedMissingLessons(KanaType.KATAKANA, katakana());
         long afterCount = kanaLessonRepository.count();
+        long hiraganaCount = kanaLessonRepository.countByType(KanaType.HIRAGANA);
+        long katakanaCount = kanaLessonRepository.countByType(KanaType.KATAKANA);
+        long distinctTypeAndKanaCount = kanaLessonRepository.countDistinctTypeAndKana();
+        List<Object[]> duplicateRows = kanaLessonRepository.findDuplicateTypeAndKanaRows();
+        List<String> unknownTypes = kanaLessonRepository.findUnknownTypes();
 
         log.info(
-                "Kana lesson seed checked. beforeCount={}, insertedHiragana={}, insertedKatakana={}, afterCount={}",
+                "Kana lesson seed checked. beforeCount={}, insertedHiragana={}, insertedKatakana={}, afterCount={}, hiraganaCount={}, katakanaCount={}, distinctTypeAndKanaCount={}",
                 beforeCount,
                 insertedHiragana,
                 insertedKatakana,
-                afterCount
+                afterCount,
+                hiraganaCount,
+                katakanaCount,
+                distinctTypeAndKanaCount
         );
+
+        if (!duplicateRows.isEmpty()) {
+            log.warn("Duplicate kana lessons detected. duplicates={}", formatDuplicateRows(duplicateRows));
+        }
+
+        if (!unknownTypes.isEmpty()) {
+            log.warn("Unknown kana lesson types detected. unknownTypes={}", unknownTypes);
+        }
     }
 
     private int seedMissingLessons(KanaType type, String[][] data) {
@@ -53,6 +70,12 @@ public class KanaLessonDataInitializer implements ApplicationRunner {
         }
 
         return insertedCount;
+    }
+
+    private String formatDuplicateRows(List<Object[]> duplicateRows) {
+        return duplicateRows.stream()
+                .map(row -> row[0] + ":" + row[1] + "=" + row[2])
+                .collect(Collectors.joining(", "));
     }
 
     private String[][] hiragana() {

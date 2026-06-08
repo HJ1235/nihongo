@@ -20,7 +20,7 @@ public class DashboardService {
 
     @Transactional(readOnly = true)
     public DashboardResponse getDashboard(Long userId) {
-        long totalLessons = kanaLessonRepository.count();
+        long totalLessons = kanaLessonRepository.countDistinctTypeAndKana();
         long completedLessons = progressRepository.countByUserIdAndCompletedTrue(userId);
         double progressPercent = calculateProgressPercent(completedLessons, totalLessons);
         long hiraganaCompleted = progressRepository.countByUserIdAndLessonTypeAndCompletedTrue(userId, KanaType.HIRAGANA);

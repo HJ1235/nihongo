@@ -2133,7 +2133,9 @@ h2 {
 
 .brand-logo {
   width: 44px;
-  border-radius: 12px;
+  height: 44px;
+  border-radius: 0;
+  object-fit: contain;
 }
 
 .brand-copy {
@@ -2235,7 +2237,8 @@ h2 {
   }
 
   .brand-logo {
-    width: 40px;
+    width: 42px;
+    height: 42px;
   }
 
   .brand-copy small {

@@ -37,7 +37,7 @@ function AppLayout({ children }: AppLayoutProps) {
     <div className="app-layout">
       <header className="app-header">
         <NavLink className="brand-link" to="/dashboard">
-          <img alt="NihonGO" className="brand-logo" src="/logo.png" />
+          <img alt="NihonGO icon" className="brand-logo" src="/logo-icon.png" />
           <span className="brand-copy">
             <span>NihonGO</span>
             <small>Premium Japanese learning</small>

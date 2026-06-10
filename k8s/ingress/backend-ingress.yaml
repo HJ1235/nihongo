@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: nihongo-backend
   namespace: nihongo
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   tls:

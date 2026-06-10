@@ -1,35 +1,36 @@
-# NihonGO CI/CD
+# CI/CD
 
-NihonGO backend는 GitHub Actions, GHCR, ArgoCD를 이용해 GitOps 방식으로 배포합니다.
+NihonGO backend는 GitHub Actions, Docker, GHCR, Kubernetes manifest 자동 갱신을 조합해 배포 준비 파이프라인을 구성했습니다.
 
-## 전체 흐름
+## 목표
 
-1. `backend/**` 코드 변경 후 `main` 브랜치에 push
-2. GitHub Actions 실행
-3. Backend Docker image 빌드
-4. GHCR에 `latest`와 short SHA 태그 push
-5. GHCR에서 short SHA 태그 이미지를 `docker pull`로 검증
-6. pull 검증 성공 시 `k8s/backend/deployment.yaml`의 image 태그를 short SHA로 변경
-7. GitHub Actions bot이 변경된 manifest를 main 브랜치에 commit/push
-8. ArgoCD가 Git 변경을 감지
-9. Kubernetes에 새 backend image 자동 배포
+- backend 코드 변경 시 Docker image 자동 빌드
+- GHCR에 `latest`와 short SHA 태그 push
+- push된 short SHA image를 pull 검증
+- Kubernetes Deployment image tag를 short SHA로 자동 변경
+- 변경된 manifest를 GitHub Actions bot이 main 브랜치에 commit/push
+- ArgoCD가 Git 변경을 감지해 Kubernetes에 자동 반영
 
-## Workflow
-
-파일:
+## Workflow 파일
 
 ```text
 .github/workflows/backend-docker-ghcr.yml
 ```
 
-트리거:
+## Trigger
 
-- `main` 브랜치 push
-- `backend/**` 변경
-- `.github/workflows/backend-docker-ghcr.yml` 변경
-- `workflow_dispatch` 수동 실행
+```yaml
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-docker-ghcr.yml"
+  workflow_dispatch:
+```
 
-자동 commit으로 인한 무한 반복은 workflow path filter와 commit message의 `[skip ci]`로 방지합니다. GitHub Actions가 커밋하는 파일은 `k8s/backend/deployment.yaml`이며, 해당 경로는 workflow trigger path에 포함되어 있지 않습니다.
+`k8s/backend/deployment.yaml` 변경 commit은 workflow trigger path에 포함하지 않습니다. 자동 commit 메시지에도 `[skip ci]`를 포함해 불필요한 반복 실행을 방지합니다.
 
 ## 권한
 
@@ -39,103 +40,57 @@ permissions:
   packages: write
 ```
 
-`contents: write`는 deployment manifest 자동 commit/push에 사용합니다. `packages: write`는 GHCR image push에 사용합니다.
+- `contents: write`: deployment manifest 자동 commit/push
+- `packages: write`: GHCR image push
 
-## Registry
+별도 Personal Access Token은 사용하지 않고 `GITHUB_TOKEN`을 사용합니다.
 
-- Registry: GHCR
-- Image: `ghcr.io/hj1235/nihongo-backend`
-- Authentication: `GITHUB_TOKEN`
-- 별도 PAT는 사용하지 않습니다.
-
-```yaml
-username: ${{ github.actor }}
-password: ${{ secrets.GITHUB_TOKEN }}
-```
-
-## Image Tags
-
-GitHub Actions는 아래 두 태그를 push합니다.
+## Image Tag 전략
 
 ```text
 ghcr.io/hj1235/nihongo-backend:latest
 ghcr.io/hj1235/nihongo-backend:${SHORT_SHA}
 ```
 
-예시:
+`SHORT_SHA`는 workflow 시작 시 `GITHUB_SHA` 앞 7자리로 한 번만 생성하고, Docker push와 manifest update에 같은 값을 사용합니다.
+
+## 배포 흐름
 
 ```text
-ghcr.io/hj1235/nihongo-backend:a1b2c3d
+1. backend 코드 변경
+2. main 브랜치 push
+3. GitHub Actions 실행
+4. Docker build
+5. GHCR push latest + short SHA
+6. docker pull로 short SHA image 검증
+7. deployment.yaml image tag를 short SHA로 변경
+8. GitHub Actions bot이 manifest commit/push
+9. ArgoCD가 Git 변경 감지
+10. Kubernetes rollout
 ```
 
-## Kubernetes Manifest Update
+## Manifest 자동 갱신
 
-Docker image push가 성공하면 workflow가 먼저 아래 명령으로 short SHA 태그 이미지를 GHCR에서 pull 검증합니다.
-
-```bash
-docker pull ghcr.io/hj1235/nihongo-backend:${SHORT_SHA}
-```
-
-pull 검증이 성공한 경우에만 workflow가 [k8s/backend/deployment.yaml](../k8s/backend/deployment.yaml)의 image 라인을 short SHA 태그로 변경합니다.
-
-변경 전 예시:
+workflow는 `k8s/backend/deployment.yaml`의 backend image line만 변경합니다.
 
 ```yaml
-image: ghcr.io/hj1235/nihongo-backend:latest
-```
-
-변경 후 예시:
-
-```yaml
-image: ghcr.io/hj1235/nihongo-backend:a1b2c3d
+image: ghcr.io/hj1235/nihongo-backend:<short-sha>
 ```
 
 자동 commit 메시지:
 
 ```text
-chore: update backend image to a1b2c3d [skip ci]
+chore: update backend image to <short-sha> [skip ci]
 ```
-
-commit author:
-
-```text
-github-actions[bot]
-```
-
-## ArgoCD
-
-ArgoCD Application은 현재 repository의 `k8s/backend` 경로를 감시합니다.
-
-- Repository: `HJ1235/nihongo`
-- Path: `k8s/backend`
-- Namespace: `nihongo`
-
-ArgoCD는 deployment image tag 변경 commit을 감지하고 Kubernetes backend Deployment를 자동 동기화합니다.
-
-## Secret 관리
-
-실제 비밀값은 Git에 커밋하지 않습니다.
-
-- `k8s/backend/secret.local.yaml`은 로컬 apply 전용이며 `.gitignore`에 포함되어 있습니다.
-- `k8s/backend/secret.example.yaml`은 placeholder 예시만 포함합니다.
-- Neon DB URL, DB password, JWT secret, OpenAI API key는 GitHub Actions workflow나 문서에 저장하지 않습니다.
 
 ## 확인 명령어
 
-GitHub Actions 실행 후 image tag commit 확인:
+GitHub Actions 완료 후 로컬에서 다음 명령으로 image tag 변경을 확인합니다.
 
 ```powershell
 git pull origin main
 git log --oneline -5
 Get-Content k8s/backend/deployment.yaml
-```
-
-ArgoCD 상태 확인:
-
-```powershell
-argocd app get nihongo-backend
-argocd app sync nihongo-backend
-argocd app wait nihongo-backend --health
 ```
 
 Kubernetes 상태 확인:
@@ -146,9 +101,16 @@ kubectl -n nihongo describe deploy nihongo-backend
 kubectl -n nihongo logs -l app=nihongo-backend --tail=100
 ```
 
-서비스 확인:
+Service 확인:
 
 ```powershell
 kubectl -n nihongo port-forward svc/nihongo-backend 8080:80
 Invoke-RestMethod http://localhost:8080/api/health
 ```
+
+## Secret 관리 원칙
+
+- 실제 DB URL, DB password, JWT secret, OpenAI API key는 Git에 커밋하지 않습니다.
+- `k8s/backend/secret.local.yaml`은 로컬 적용 전용입니다.
+- GitOps 대상 manifest에는 Secret example을 포함하지 않습니다.
+- 운영 환경에서는 External Secrets, Sealed Secrets, 클라우드 Secret Manager 연동을 고려합니다.

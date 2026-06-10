@@ -6,9 +6,21 @@
 
 ## 검증 목표
 
-- `https://api.nihongotest.shop/api/health` 요청 확인
+- `http://api.nihongotest.shop/api/health` 요청이 308 redirect 없이 동작하는지 확인
+- `https://api.nihongotest.shop/api/health` 요청이 self-signed TLS로 동작하는지 확인
 - ingress-nginx TLS termination 구조 검증
 - 운영 인증서 없이 로컬 HTTPS 흐름만 확인
+
+## 로컬 테스트 기준
+
+Vercel 프론트와 브라우저는 self-signed 인증서를 신뢰하지 않습니다. 따라서 로그인 같은 실제 기능 테스트는 HTTP 기준으로 진행합니다.
+
+Ingress에는 다음 annotation을 추가해 HTTP 요청이 HTTPS로 강제 redirect 되지 않도록 합니다.
+
+```yaml
+nginx.ingress.kubernetes.io/ssl-redirect: "false"
+nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+```
 
 ## 주의사항
 
@@ -32,5 +44,7 @@ kubectl -n nihongo create secret tls nihongo-backend-tls `
   --key=.local-certs\api.nihongotest.shop.key
 
 kubectl apply -f k8s/ingress/backend-ingress.yaml
+
+Invoke-RestMethod http://api.nihongotest.shop/api/health
 Invoke-WebRequest https://api.nihongotest.shop/api/health -SkipCertificateCheck
 ```

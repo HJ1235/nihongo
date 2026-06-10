@@ -4,6 +4,8 @@ NihonGO backend를 Docker Desktop Kubernetes 환경에서 `api.nihongotest.shop`
 
 현재 목적은 포트폴리오용 HTTPS 구조 검증입니다. 실제 운영 인증서가 아닌 self-signed TLS 인증서를 사용하며, Let's Encrypt, cert-manager, Route53, ACM은 아직 사용하지 않습니다.
 
+로컬 로그인 테스트에서는 브라우저와 Vercel 프론트가 self-signed 인증서를 신뢰하지 않기 때문에 HTTP API 호출도 그대로 동작해야 합니다. 이를 위해 ingress-nginx의 강제 HTTPS redirect를 비활성화합니다.
+
 ## 현재 환경
 
 - Kubernetes: Docker Desktop Kubernetes
@@ -25,6 +27,10 @@ k8s/ingress/backend-ingress.yaml
 핵심 설정:
 
 ```yaml
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   tls:
@@ -44,7 +50,21 @@ spec:
                   number: 80
 ```
 
-`nihongo-backend-tls` Secret은 Git에 커밋하지 않고 로컬 Kubernetes 클러스터에 직접 생성합니다.
+`tls` block은 HTTPS 구조 검증을 위해 유지합니다. 다만 `ssl-redirect`와 `force-ssl-redirect`를 `false`로 설정해 HTTP 요청이 308 redirect 되지 않도록 합니다.
+
+## HTTP 테스트
+
+로그인 기능과 Vercel 프론트 연동 테스트는 HTTP 기준으로 진행합니다.
+
+```powershell
+Invoke-RestMethod http://api.nihongotest.shop/api/health
+```
+
+로그인 API 예시:
+
+```powershell
+Invoke-WebRequest http://api.nihongotest.shop/api/auth/login
+```
 
 ## Self-Signed 인증서 생성
 
@@ -60,14 +80,6 @@ openssl req -x509 -nodes -days 365 `
 ```
 
 생성되는 인증서와 키 파일은 Git에 커밋하지 않습니다.
-
-`.gitignore`에는 다음 확장자를 제외하도록 설정합니다.
-
-```text
-*.crt
-*.key
-*.pem
-```
 
 ## Kubernetes TLS Secret 생성
 
@@ -100,33 +112,25 @@ kubectl -n nihongo describe ingress nihongo-backend
 
 ## HTTPS 테스트
 
-PowerShell:
+self-signed 인증서는 브라우저가 신뢰하지 않으므로 PowerShell에서는 인증서 검증을 건너뛰고 테스트합니다.
 
 ```powershell
 Invoke-WebRequest https://api.nihongotest.shop/api/health -SkipCertificateCheck
 ```
 
-브라우저:
+브라우저 접근:
 
 ```text
 https://api.nihongotest.shop/api/health
 ```
 
-정상 응답 예시:
-
-```json
-{
-  "success": true,
-  "message": null,
-  "data": "OK"
-}
-```
+브라우저에서는 self-signed 인증서 경고가 표시될 수 있습니다.
 
 ## Self-Signed 인증서 경고
 
 브라우저는 공인 CA가 서명하지 않은 self-signed 인증서를 신뢰하지 않습니다. 따라서 로컬 HTTPS 테스트 시 보안 경고가 표시됩니다.
 
-이 경고는 로컬 검증 환경에서는 정상적인 현상입니다. 운영 환경에서는 self-signed 인증서를 사용하지 않습니다.
+이 경고는 로컬 검증 환경에서는 정상입니다. 운영 환경에서는 self-signed 인증서를 사용하지 않습니다.
 
 ## 운영 전환 방향
 

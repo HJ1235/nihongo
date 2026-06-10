@@ -33,6 +33,9 @@ public class SecurityConfig {
 
     private static final List<String> PUBLIC_EXACT_PATHS = List.of(
             "/api/health",
+            "/api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/refresh",
             "/api/users/signup",
             "/api/users/login",
             "/error",

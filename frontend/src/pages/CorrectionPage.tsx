@@ -24,11 +24,7 @@ const modeLabels: Record<CorrectionMode, string> = {
 };
 
 function getErrorMessage(error: unknown, fallback: string) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return fallback;
+  return error instanceof Error ? error.message : fallback;
 }
 
 function formatDate(value: string) {
@@ -145,7 +141,7 @@ function CorrectionPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        description="문장을 입력하면 자연스러운 일본어 표현과 교정 이유를 확인할 수 있습니다."
+        description="문장을 입력하면 자연스러운 일본어 표현과 교정 이유를 한국어로 확인할 수 있습니다."
         eyebrow="AI Correction"
         title="일본어 AI 교정"
       />

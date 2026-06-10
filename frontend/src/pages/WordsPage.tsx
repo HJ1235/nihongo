@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Volume2 } from 'lucide-react';
 import { getWords } from '../api/wordApi';
 import type { WordResponse } from '../api/types';
-import { Badge, ButtonLink, Card, PageHeader } from '../components/ui';
+import { Badge, Button, ButtonLink, Card, PageHeader } from '../components/ui';
 
 function WordsPage() {
   const [words, setWords] = useState<WordResponse[]>([]);
@@ -31,9 +32,9 @@ function WordsPage() {
     <main className="page-layout">
       <PageHeader
         action={<ButtonLink to="/word-quiz">단어 퀴즈</ButtonLink>}
-        description="JLPT N5 핵심 단어를 뜻과 예문으로 확인하세요."
-        eyebrow="JLPT N5"
-        title="N5 단어 학습"
+        description="JLPT N5 필수 어휘를 읽기, 뜻, 예문과 함께 익힙니다."
+        eyebrow="JLPT"
+        title="N5 어휘 학습"
       />
 
       {loading && <p className="status-text">단어 목록을 불러오는 중입니다...</p>}
@@ -45,7 +46,12 @@ function WordsPage() {
           {words.map((word) => (
             <Card className="word-card" key={word.id}>
               <div className="word-card-main">
-                <Badge>{word.level}</Badge>
+                <div className="lesson-card-top">
+                  <Badge>{word.level}</Badge>
+                  <Button aria-label={`${word.japanese} 발음 듣기`} type="button" variant="ghost">
+                    <Volume2 aria-hidden="true" size={18} />
+                  </Button>
+                </div>
                 <strong>{word.japanese}</strong>
                 <span>{word.reading}</span>
                 <p>{word.meaning}</p>

@@ -8,6 +8,7 @@ import AdminNoticesPage from './pages/AdminNoticesPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import CorrectionPage from './pages/CorrectionPage';
 import DashboardPage from './pages/DashboardPage';
+import LandingPage from './pages/LandingPage';
 import LessonsPage from './pages/LessonsPage';
 import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
@@ -29,6 +30,7 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={protectedPage(<DashboardPage />)} />

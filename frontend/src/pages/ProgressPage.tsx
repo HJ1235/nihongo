@@ -44,9 +44,9 @@ function ProgressPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        description="완료한 문자와 남은 학습 분량을 확인합니다."
-        eyebrow="Progress"
-        title="학습 진행률"
+        description="완료한 문자와 남은 학습량을 확인하고 다음 목표를 정합니다."
+        eyebrow="Profile"
+        title="내 학습 진도"
       />
 
       {loading && <p className="status-text">진도 정보를 불러오는 중입니다...</p>}
@@ -76,7 +76,7 @@ function ProgressPage() {
               <span>가타카나 완료</span>
               <strong>{dashboard.katakanaCompleted}</strong>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-card-dark">
               <span>남은 학습</span>
               <strong>{Math.max(dashboard.totalLessons - dashboard.completedLessons, 0)}</strong>
             </Card>

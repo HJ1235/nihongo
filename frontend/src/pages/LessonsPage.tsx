@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Clock, NotebookPen } from 'lucide-react';
 import { getLessons } from '../api/lessonApi';
 import type { KanaType, LessonResponse } from '../api/types';
 import { Badge, Button, ButtonLink, Card, PageHeader } from '../components/ui';
@@ -39,10 +40,15 @@ function LessonsPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        action={<ButtonLink to="/quiz">퀴즈 시작</ButtonLink>}
-        description="문자와 발음을 카드로 확인하고, 퀴즈로 바로 복습해보세요."
-        eyebrow="Lessons"
-        title="학습 목록"
+        action={
+          <ButtonLink to="/quiz">
+            <NotebookPen aria-hidden="true" size={18} />
+            퀴즈 시작
+          </ButtonLink>
+        }
+        description="히라가나와 가타카나를 차분히 확인하고, 바로 퀴즈로 복습합니다."
+        eyebrow="Learn"
+        title="문자 학습"
       />
 
       <section className="filter-row" aria-label="Lesson filters">
@@ -66,10 +72,17 @@ function LessonsPage() {
       {!loading && !errorMessage && lessons.length > 0 && (
         <section className="lesson-grid">
           {lessons.map((lesson) => (
-            <Card className="kana-card" key={lesson.id}>
-              <Badge>{lesson.kanaType === 'HIRAGANA' ? 'Hiragana' : 'Katakana'}</Badge>
+            <Card className="kana-card lesson-card" key={lesson.id}>
+              <div className="lesson-card-top">
+                <Badge>{lesson.kanaType === 'HIRAGANA' ? 'Hiragana' : 'Katakana'}</Badge>
+                <span>
+                  <Clock aria-hidden="true" size={14} />
+                  2분
+                </span>
+              </div>
               <strong>{lesson.character}</strong>
               <p>{lesson.romaji}</p>
+              <small>JLPT N5 · 기초</small>
             </Card>
           ))}
         </section>

@@ -75,9 +75,13 @@ function QuizPage({ mode = 'random' }: QuizPageProps) {
   return (
     <main className="page-layout">
       <PageHeader
-        description={isReviewMode ? '오답노트에 남은 문자를 다시 확인합니다.' : '문자를 보고 알맞은 로마자를 선택하세요.'}
+        description={
+          isReviewMode
+            ? '오답노트에 남은 문자를 다시 확인합니다.'
+            : '문자를 보고 올바른 로마자를 선택하세요.'
+        }
         eyebrow={isReviewMode ? 'Review Quiz' : 'Quiz'}
-        title={isReviewMode ? '복습 퀴즈' : '랜덤 퀴즈'}
+        title={isReviewMode ? '복습 퀴즈' : '문자 퀴즈'}
       />
 
       {loading && <p className="status-text">퀴즈를 불러오는 중입니다...</p>}
@@ -107,7 +111,7 @@ function QuizPage({ mode = 'random' }: QuizPageProps) {
 
           {result && (
             <Card className={result.correct ? 'result-panel correct' : 'result-panel incorrect'}>
-              <h2>{result.correct ? '정답입니다' : '오답입니다'}</h2>
+              <h2>{result.correct ? '정답입니다' : '다시 확인해볼까요'}</h2>
               <p>정답: {result.correctAnswer}</p>
               <p>학습 완료 처리: {result.progressCompleted ? '완료' : '미완료'}</p>
               <p>오답노트 해결: {result.wrongNoteResolved ? '해결됨' : '해당 없음'}</p>

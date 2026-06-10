@@ -55,8 +55,8 @@ function WrongNotesPage() {
     <main className="page-layout">
       <PageHeader
         action={<ButtonLink to="/quiz/review">복습 퀴즈 시작</ButtonLink>}
-        description="자주 틀린 문자를 모아 다시 확인하고 복습할 수 있습니다."
-        eyebrow="Wrong Notes"
+        description="자주 틀린 문자를 모아 다시 확인하고 복습합니다."
+        eyebrow="Review"
         title="오답노트"
       />
 

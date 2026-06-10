@@ -92,7 +92,7 @@ function AdminDashboardPage() {
             <Card className="admin-card">
               <div>
                 <h2>공지사항 관리</h2>
-                <p>공지 작성, 수정, 삭제와 상단 고정을 관리합니다.</p>
+                <p>공지 작성, 수정, 삭제와 상단 고정 여부를 관리합니다.</p>
               </div>
               <ButtonLink to="/admin/notices">공지 관리로 이동</ButtonLink>
             </Card>

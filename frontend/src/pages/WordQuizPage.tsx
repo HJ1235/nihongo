@@ -68,7 +68,7 @@ function WordQuizPage() {
   return (
     <main className="page-layout">
       <PageHeader
-        description="일본어 단어와 읽는 법을 보고 알맞은 뜻을 고르세요."
+        description="일본어 단어와 읽는 법을 보고 올바른 뜻을 선택하세요."
         eyebrow="Word Quiz"
         title="N5 단어 퀴즈"
       />
@@ -101,7 +101,7 @@ function WordQuizPage() {
 
           {result && (
             <Card className={result.correct ? 'result-panel correct' : 'result-panel incorrect'}>
-              <h2>{result.correct ? '정답입니다' : '오답입니다'}</h2>
+              <h2>{result.correct ? '정답입니다' : '다시 확인해볼까요'}</h2>
               <p>정답: {result.correctAnswer}</p>
             </Card>
           )}
